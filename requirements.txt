@@ -1,0 +1,17 @@
+# Dados e PDF
+SQLAlchemy==2.1.6
+pypdf==6.21.4
+
+# Web
+fastapi==0.162.0
+uvicorn==0.54.0
+python-multipart==0.0.33
+bcrypt==5.0.0
+
+# Testes e lint
+pytest==9.2.0
+ruff==0.17.3
+
+# Sprint 3 (RAG): entram quando o código de embeddings existir
+# sentence-transformers
+# faiss-cpu

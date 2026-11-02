@@ -17,5 +17,4 @@ pytest && ruff check .
 ```
 
 ## Convenções (clean code)
-Funções pequenas com um propósito, nomes claros, regra de negócio fora da camada web, teste para cada regra.
-Branch por tarefa (`feat/rf08-extracao-pdf`), PR com revisão de outro membro, commits no imperativo.
+Commits direto na branch `dev`, com CI verde antes de cada push. A `main` recebe só versões estáveis (entregas das sprints).
