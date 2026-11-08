@@ -10,10 +10,14 @@ dependencies = [
     "uvicorn",
     "python-multipart",
     "bcrypt",
+    "itsdangerous",
+    "sentence-transformers",
+    "faiss-cpu",
+    "numpy",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.5"]
+dev = ["pytest>=8", "ruff>=0.5", "httpx"]
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -25,6 +29,8 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+# O TestClient do Starlette avisa sobre o httpx; não afeta o código do projeto.
+filterwarnings = ["ignore:Using `httpx` with"]
 
 [tool.ruff]
 line-length = 100

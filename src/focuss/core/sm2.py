@@ -1,4 +1,5 @@
 """Motor de repetição espaçada SM-2 (lógica determinística, sem LLM)."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, replace

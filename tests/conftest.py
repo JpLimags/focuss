@@ -50,3 +50,36 @@ def gerar_pdf(*paginas: str) -> bytes:
 @pytest.fixture
 def pdf():
     return gerar_pdf
+
+
+class CodificadorPalavras:
+    """Embedding falso e determinístico para testes: saco de palavras com hash.
+
+    Textos que dividem palavras ficam parecidos, sem precisar baixar o modelo real.
+    """
+
+    dimensao = 256
+
+    def codificar(self, textos):
+        import zlib
+
+        import numpy as np
+
+        matriz = np.zeros((len(textos), self.dimensao), dtype=np.float32)
+        for linha, texto in enumerate(textos):
+            for palavra in texto.lower().split():
+                palavra = palavra.strip(".,;:!?()")
+                if len(palavra) > 2:
+                    matriz[linha, zlib.crc32(palavra.encode()) % self.dimensao] += 1
+            norma = np.linalg.norm(matriz[linha])
+            if norma:
+                matriz[linha] /= norma
+        return matriz
+
+
+@pytest.fixture
+def motor(tmp_path):
+    from focuss.rag.vetorial import ArmazenamentoFaiss
+    from focuss.servicos.recuperacao import MotorBusca
+
+    return MotorBusca(ArmazenamentoFaiss(tmp_path / "indices"), CodificadorPalavras)

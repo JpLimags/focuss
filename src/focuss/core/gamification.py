@@ -1,4 +1,5 @@
 """Regras de jogo determinísticas (XP, nível, sequência). Valores a calibrar (RN12/RN13)."""
+
 from __future__ import annotations
 
 from datetime import date

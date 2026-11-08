@@ -1,17 +1,23 @@
+# Dependências do Focuss (versões testadas). Manter em sincronia com pyproject.toml.
+
 # Dados e PDF
 SQLAlchemy==2.1.6
 pypdf==6.21.4
+
+# RAG: embeddings e busca vetorial
+# (sentence-transformers instala o PyTorch; no 1º uso baixa o modelo, ~470 MB)
+sentence-transformers==6.2.0
+faiss-cpu==1.15.1
+numpy==2.5.4
 
 # Web
 fastapi==0.162.0
 uvicorn==0.54.0
 python-multipart==0.0.33
 bcrypt==5.0.0
+itsdangerous==2.2.0
 
 # Testes e lint
 pytest==9.2.0
 ruff==0.17.3
-
-# Sprint 3 (RAG): entram quando o código de embeddings existir
-# sentence-transformers
-# faiss-cpu
+httpx==0.28.1

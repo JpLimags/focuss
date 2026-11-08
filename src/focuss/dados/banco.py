@@ -6,6 +6,7 @@ import os
 
 from sqlalchemy import Engine, create_engine, event
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 URL_PADRAO = "sqlite:///data/focuss.db"
 
@@ -16,9 +17,14 @@ class Base(DeclarativeBase):
 
 def criar_engine(url: str | None = None) -> Engine:
     url = url or os.environ.get("FOCUSS_DB_URL", URL_PADRAO)
-    if url.startswith("sqlite:///") and not url.startswith("sqlite:///:memory:"):
-        os.makedirs(os.path.dirname(url.removeprefix("sqlite:///")) or ".", exist_ok=True)
-    engine = create_engine(url)
+    if url in ("sqlite://", "sqlite:///:memory:"):
+        # Banco em memória (testes): uma única conexão compartilhada entre threads.
+        engine = create_engine(url, poolclass=StaticPool, connect_args={"check_same_thread": False})
+    else:
+        if url.startswith("sqlite:///"):
+            pasta = os.path.dirname(url.removeprefix("sqlite:///"))
+            os.makedirs(pasta or ".", exist_ok=True)
+        engine = create_engine(url)
     if engine.dialect.name == "sqlite":
         event.listen(engine, "connect", _ativar_chaves_estrangeiras)
     return engine

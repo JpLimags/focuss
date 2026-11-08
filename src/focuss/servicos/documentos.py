@@ -1,4 +1,4 @@
-"""Caso de uso: enviar um PDF (RF04-05)."""
+"""Caso de uso: enviar um PDF (RF04-05) e dividir em trechos."""
 
 from __future__ import annotations
 
@@ -6,14 +6,16 @@ from pathlib import PurePath
 
 from sqlalchemy.orm import Session
 
-from focuss.dados.modelos import Documento, Usuario
+from focuss.dados.modelos import Documento, Trecho, Usuario
+from focuss.rag.chunking import dividir_em_trechos
 from focuss.rag.extracao_pdf import PdfInvalido, TextoExtraido, extrair_texto
 
 
 def enviar_documento(
     sessao: Session, usuario: Usuario, nome_arquivo: str, conteudo: bytes
 ) -> tuple[Documento, TextoExtraido]:
-    """Extrai o texto e grava o Documento. Levanta ErroPdf com mensagem para o aluno.
+    """Extrai o texto, grava o Documento e seus Trechos. Levanta ErroPdf com mensagem
+    para o aluno. A indexação vetorial fica no MotorBusca (servicos.recuperacao).
 
     Devolve também o resultado da extração, para a tela avisar páginas sem texto.
     """
@@ -26,6 +28,10 @@ def enviar_documento(
         nome_arquivo=nome,
         num_paginas=extraido.num_paginas,
         texto=extraido.texto_completo,
+        trechos=[
+            Trecho(ordem=t.ordem, pagina=t.pagina, texto=t.texto)
+            for t in dividir_em_trechos(extraido.paginas)
+        ],
     )
     sessao.add(documento)
     sessao.flush()
